@@ -15,7 +15,7 @@ fn main() {
 
     if cli.log {
         env_logger::builder()
-            .filter(Some("tui_do_dev"), log::LevelFilter::Trace)
+            .filter(Some("cursive-example"), log::LevelFilter::Trace)
             .format_timestamp(None)
             .init();
     }
