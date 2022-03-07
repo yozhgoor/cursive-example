@@ -29,12 +29,15 @@ fn main() {
         .with_user_data(|data: &mut data::ProgramData| {
             if let Some(input) = &cli.user {
                 if data.user_list.contains_key(input) {
+                    log::info!("Starting with {}", &input);
                     data.active_user = cli.user;
                     true
                 } else {
+                    log::error!("User \"{}\" not found", &input);
                     false
                 }
             } else {
+                log::info!("Starting on user list");
                 false
             }
         })
