@@ -1,6 +1,7 @@
-use cursive::{CursiveExt, Cursive};
+use cursive::{Cursive, CursiveExt};
 
 mod data;
+mod user;
 
 #[derive(Debug, clap::Parser)]
 struct Cli {
@@ -24,18 +25,26 @@ fn main() {
     siv.set_global_callback('q', |s| s.quit());
     siv.set_user_data(data::ProgramData::mock());
 
-    siv.with_user_data(|data: &mut data::ProgramData| {
-        if let Some(input) = &cli.user {
-            if data.user_list.contains(input) {
-                data.active_user = cli.user;
-                user::user_welcome(&mut siv);
+    let res = siv
+        .with_user_data(|data: &mut data::ProgramData| {
+            if let Some(input) = &cli.user {
+                if data.user_list.contains_key(input) {
+                    data.active_user = cli.user;
+                    true
+                } else {
+                    false
+                }
             } else {
-                user::user_list(&mut siv);
+                false
             }
-        } else {
-            user::user_list(&mut siv);
-        }
-    }).expect("cannot get user data");
+        })
+        .expect("cannot get user data");
+
+    if res {
+        user::user_welcome(&mut siv)
+    } else {
+        user::user_list(&mut siv)
+    }
 
     siv.run();
 }
